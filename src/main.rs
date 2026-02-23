@@ -134,6 +134,7 @@ fn main() {
 #let total_points = counter("points")
 
 
+/// Initialize an exam with a show rule TODO fix me
 #let exam_init(body) = {
     set page(margin: 40pt)
     set text(
@@ -150,6 +151,7 @@ fn main() {
     body
 }
 
+/// Render a header for the exam, will check total number of points TODO fix me
 #let header() = [
     #grid(
     columns: (1fr, 1fr),
@@ -196,6 +198,9 @@ fn main() {
 )
 
 
+/// Create a generic question
+/// @param body content Question Body
+/// @param points int Number of points the question is worth
 #let question(body, points: 1) = context {
     cur-question.update(n => n + 1)
     total_points.update(p => p + points)
@@ -216,17 +221,22 @@ fn main() {
 #let answer_indents = (1fr, 10fr, 1fr)
 
 
-// maps a number into a tuple of 1fr units
-// primarily used to make optional column passing to #multiple_choice easier
-// input = 3 -> output = (1fr, 1fr, 1fr)
-// input = 5 -> output = (1fr, 1fr, 1fr, 1fr, 1fr)
-// etc.
+/// Map a number into a tuple of 1fr units
+/// primarily used to make optional column passing to #multiple_choice easier
+/// input = 3 -> output = (1fr, 1fr, 1fr)
+/// input = 5 -> output = (1fr, 1fr, 1fr, 1fr, 1fr)
+/// @param num int number to map
+/// @return array Array of num fr units
 #let _num_to_fr_units(num) = {
     range(num).map(i => 1fr)
 }
 
 // (1fr, 2fr, 1fr)
 
+/// Create a multiple choice question
+/// @param body content Body of question
+/// @param points int = 1 Points the question is worth
+/// @param cols [int | array ] = 1 Number of columns to render the answer. Pass an array of units for specific spacing e.g. (1fr, 1fr, 12pt)
 #let multiple_choice(body, points: 1, cols: 1, ..answers) = {
     let cols_type = type(cols)
 
@@ -271,7 +281,7 @@ fn main() {
 /// @param q_body content body of question to ask
 /// @param left_opts array options for the left side of question
 /// @param right_opts array options for the right side of question
-/// @param points = 1 points the question is worth
+/// @param points int = 1 points the question is worth
 #let matching(q_body, left_opts, right_opts, points: 1) = {
     // left and right are shadows
     block[
@@ -331,6 +341,10 @@ fn main() {
     ]
 }
 
+/// Create a short answer question
+/// @param q_body content Question Body
+/// @param lines int = 1 lines of space to give the user, renders as actual lines
+/// @param points int = 1 points the question is worth
 #let short_answer(q_body, lines: 1, points: 1) = {
     question(q_body, points: points)
 
@@ -345,6 +359,10 @@ fn main() {
     ]
 }
 
+/// Create a free response question
+/// @param q_body content Question Body
+/// @param lines int = 1 lines of space to give the user, renders as empty space
+/// @param points int = 1 points the question is worth
 #let free_response(q_body, lines: 1, points: 1) = {
     question(q_body, points: points)
 
@@ -352,7 +370,10 @@ fn main() {
     v(15pt * lines)
 }
 
-// will simply extend the box to the edge of the code, can add white space if need it to be longer
+
+/// Create a code block formatted for exams
+/// Wraps in box to the edge of the code, can add white space if need it to be longer
+/// @param raw_code content(raw) raw code block, eg. ```java public class...```
 #let code_block(raw_code) = {
     box(stroke: (paint: rgb("d9d9d9"), thickness: 2pt, cap: "round"), inset: (8pt))[
         #raw_code
