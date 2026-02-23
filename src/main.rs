@@ -26,22 +26,43 @@ impl Markdownable for DocComment {
         let title = parts.get(0).expect(&panic_msg).to_owned();
         let real_description = parts.get(1).expect(&panic_msg).to_owned();
 
-        md.push_str("# ");
+        md.push_str("## ");
         md.push_str(&title);
         md.push_str("\n");
 
 
+        if self.params.len() > 0 {
+            md.push_str("### Parameters: ");
+            md.push_str("\n");
 
+            self.params.iter().for_each(|p| {
+
+                md.push_str(&p.into_markdown());
+            });
+        }
+
+        if let Some(ret) = self.return_type.clone() {
+            md.push_str("### Returns: ");
+            md.push_str("\n");
+            md.push_str(&ret.into_markdown());
+        }
 
         return md;
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Return {
     data_type: String,
     description: String,
 }
+
+impl Markdownable for Return{
+    fn into_markdown(&self) -> String {
+       format!("`{}`: {}", self.data_type, self.description)
+    }
+}
+
 
 #[derive(Debug)]
 struct Param {
@@ -49,6 +70,19 @@ struct Param {
     data_type: Vec<String>,
     default: Option<String>,
     description: String,
+}
+
+impl Markdownable for Param{
+    fn into_markdown(&self) -> String {
+        let data_type_str = self.data_type.join(" | ");
+
+        let mut default_str = String::new();
+        if let Some(def) = self.default.clone() {
+            default_str = format!("(default: {})", def);
+        };
+
+        format!("{}: `{}` {} {}",self.name, data_type_str, default_str, self.description)
+    }
 }
 
 fn parse_document(input: &str) -> Vec<DocComment> {
@@ -164,7 +198,7 @@ fn main() {
 #let total_points = counter("points")
 
 
-/// Initialize an exam with a show rule TODO fix me
+/// exam_init: Initialize an exam with a show rule TODO fix me
 #let exam_init(body) = {
     set page(margin: 40pt)
     set text(
@@ -181,7 +215,7 @@ fn main() {
     body
 }
 
-/// Render a header for the exam, will check total number of points TODO fix me
+/// header: Render a header for the exam, will check total number of points TODO fix me
 #let header() = [
     #grid(
     columns: (1fr, 1fr),
@@ -418,5 +452,8 @@ fn main() {
     /// @return Response description
 
     let docs = parse_document(input);
-    println!("{:#?}", docs);
+
+    docs.iter().for_each(|f| {
+        println!("{}", f.into_markdown());
+    });
 }

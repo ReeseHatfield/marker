@@ -1,0 +1,26 @@
+## exam_init
+
+## header
+
+## question
+### Parameters: 
+body: `content`  Question Bodypoints: `int`  Number of points the question is worth
+## _num_to_fr_units
+### Parameters: 
+num: `int`  number to map### Returns: 
+`array`: Array of num fr units
+## multiple_choice
+### Parameters: 
+body: `content`  Body of questionpoints: `int` (default: 1) Points the question is worthcols: `int | array` (default: 1) Number of columns to render the answer. Pass an array of units for specific spacing e.g. (1fr, 1fr, 12pt)
+## matching
+### Parameters: 
+q_body: `content`  body of question to askleft_opts: `array`  options for the left side of questionright_opts: `array`  options for the right side of questionpoints: `int` (default: 1) points the question is worth
+## short_answer
+### Parameters: 
+q_body: `content`  Question Bodylines: `int` (default: 1) lines of space to give the user, renders as actual linespoints: `int` (default: 1) points the question is worth
+## free_response
+### Parameters: 
+q_body: `content`  Question Bodylines: `int` (default: 1) lines of space to give the user, renders as empty spacepoints: `int` (default: 1) points the question is worth
+## code_block
+### Parameters: 
+raw_code: `content(raw)`  raw code block, eg. ```java public class...```
