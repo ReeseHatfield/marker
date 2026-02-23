@@ -29,6 +29,8 @@ impl Markdownable for DocComment {
         md.push_str("## ");
         md.push_str(&title);
         md.push_str("\n");
+        md.push_str(&real_description);
+        md.push_str("\n");
 
 
         if self.params.len() > 0 {
