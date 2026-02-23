@@ -15,6 +15,27 @@
 
 //type can be unioned with [sdf|]
 
+
+struct DocComment {
+    description: String,
+    params: Option<Vec<Param>>,
+    return_type: Option<Return>
+}
+
+struct Return {
+    data_type: String,
+    description: String,
+}
+
+struct Param {
+    name: String,
+    data_type: Vec<String>,
+    default: Option<String>,
+    description: String,
+}
+
+
 fn main() {
     println!("Hello, world!");
+
 }
