@@ -47,6 +47,7 @@ impl Markdownable for DocComment {
             md.push_str(&ret.into_markdown());
         }
 
+        md.push_str("\n");
         return md;
     }
 }
@@ -59,7 +60,7 @@ struct Return {
 
 impl Markdownable for Return{
     fn into_markdown(&self) -> String {
-       format!("`{}`: {}", self.data_type, self.description)
+       format!("`{}`: {} \n", self.data_type, self.description)
     }
 }
 
@@ -81,7 +82,7 @@ impl Markdownable for Param{
             default_str = format!("(default: {})", def);
         };
 
-        format!("{}: `{}` {} {}",self.name, data_type_str, default_str, self.description)
+        format!("{}: `{}` {} {} \n",self.name, data_type_str, default_str, self.description)
     }
 }
 
@@ -175,18 +176,6 @@ fn parse_block(block: &str) -> DocComment {
         return_type,
     }
 }
-
-/// sends a request
-///
-/// @param url string
-/// @param retries int = 3 number of retries
-/// @param timeout ms = 5000 request timeout
-/// @return type description
-
-
-/// description
-/// @param <name> <type> [= default_val] [description]
-/// @return <type> description
 
 
 fn main() {
