@@ -1,10 +1,40 @@
-use regex::Regex;
+use std::ops::Add;
+
+use regex::{Regex, bytes::SetMatchesIter};
+
+
+trait Markdownable {
+    fn into_markdown(&self) -> String;
+}
+
 
 #[derive(Debug)]
 struct DocComment {
     description: String,
     params: Vec<Param>,
     return_type: Option<Return>,
+}
+
+impl Markdownable for DocComment {
+    fn into_markdown(&self) -> String {
+        let mut md = String::new();
+
+        // get the title via split on ": " from descriptions
+
+        let parts: Vec<String> = self.description.split(": ").map(|s| s.to_string()).collect();
+        let panic_msg = "Could not parse doc header. Ensure your header follows the `title: description' format".to_string();
+        let title = parts.get(0).expect(&panic_msg).to_owned();
+        let real_description = parts.get(1).expect(&panic_msg).to_owned();
+
+        md.push_str("# ");
+        md.push_str(&title);
+        md.push_str("\n");
+
+
+
+
+        return md;
+    }
 }
 
 #[derive(Debug)]
@@ -198,7 +228,7 @@ fn main() {
 )
 
 
-/// Create a generic question
+/// question: Create a generic question
 /// @param body content Question Body
 /// @param points int Number of points the question is worth
 #let question(body, points: 1) = context {
@@ -221,7 +251,7 @@ fn main() {
 #let answer_indents = (1fr, 10fr, 1fr)
 
 
-/// Map a number into a tuple of 1fr units
+/// _num_to_fr_units: Map a number into a tuple of 1fr units
 /// primarily used to make optional column passing to #multiple_choice easier
 /// input = 3 -> output = (1fr, 1fr, 1fr)
 /// input = 5 -> output = (1fr, 1fr, 1fr, 1fr, 1fr)
@@ -231,9 +261,8 @@ fn main() {
     range(num).map(i => 1fr)
 }
 
-// (1fr, 2fr, 1fr)
 
-/// Create a multiple choice question
+/// multiple_choice: Create a multiple choice question
 /// @param body content Body of question
 /// @param points int = 1 Points the question is worth
 /// @param cols [int | array ] = 1 Number of columns to render the answer. Pass an array of units for specific spacing e.g. (1fr, 1fr, 12pt)
@@ -273,7 +302,7 @@ fn main() {
     ]
 }
 
-/// Create a matching question
+/// matching: Create a matching question
 /// e.g
 /// Cat      A. Canine
 /// Dog      B. Feline
@@ -341,7 +370,7 @@ fn main() {
     ]
 }
 
-/// Create a short answer question
+/// short_answer: Create a short answer question
 /// @param q_body content Question Body
 /// @param lines int = 1 lines of space to give the user, renders as actual lines
 /// @param points int = 1 points the question is worth
@@ -359,7 +388,7 @@ fn main() {
     ]
 }
 
-/// Create a free response question
+/// free_response: Create a free response question
 /// @param q_body content Question Body
 /// @param lines int = 1 lines of space to give the user, renders as empty space
 /// @param points int = 1 points the question is worth
@@ -371,7 +400,7 @@ fn main() {
 }
 
 
-/// Create a code block formatted for exams
+/// code_block: Create a code block formatted for exams
 /// Wraps in box to the edge of the code, can add white space if need it to be longer
 /// @param raw_code content(raw) raw code block, eg. ```java public class...```
 #let code_block(raw_code) = {
