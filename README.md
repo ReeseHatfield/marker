@@ -68,3 +68,36 @@ A full example of a function that returns a value can be found below.
     range(num).map(i => 1fr)
 }
 ```
+
+## Output:
+`marker` will generate markdown docs when given a typst file.
+`marker` sends the markdown to standard out by default.
+
+```
+/// free_response: Create a free response question
+/// @param q_body content Question Body
+/// @param lines int = 1 lines of space to give the user, renders as empty space
+/// @param points int = 1 points the question is worth
+```
+
+```bash
+marker file.typ
+```
+will generate the following markdown for the previous marker doc comment
+
+```md
+## free_response
+Create a free response question
+### Parameters:
+q_body: `content`  Question Body
+lines: `int` (default: 1) lines of space to give the user, renders as empty space
+points: `int` (default: 1) points the question is worth
+```
+or the rendered version:
+
+## free_response
+Create a free response question
+### Parameters:
+q_body: `content`  Question Body
+lines: `int` (default: 1) lines of space to give the user, renders as empty space
+points: `int` (default: 1) points the question is worth
