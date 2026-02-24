@@ -1,7 +1,13 @@
 [package]
 name = "marker"
-version = "0.1.1"
-edition = "2024"
+authors = ["Reese Hatfield github.com/ReeseHatfield"]
+description = "Generate markdown documentation from typst doc comments"
+license = "MIT"
+homepage = "https://github.com/ReeseHatfield/marker"
+repository = "https://github.com/ReeseHatfield/marker"
+readme = "README.md"
+version = "0.1.2"
+edition = "2024
 
 [dependencies]
 regex = "1.12.3"
