@@ -4,7 +4,7 @@ use regex::Regex;
 
 
 trait Markdownable {
-    fn into_markdown(&self) -> String;
+    fn markdown(&self) -> String;
 }
 
 
@@ -16,41 +16,41 @@ struct DocComment {
 }
 
 impl Markdownable for DocComment {
-    fn into_markdown(&self) -> String {
+    fn markdown(&self) -> String {
         let mut md = String::new();
 
         // get the title via split on ": " from descriptions
 
         let parts: Vec<String> = self.description.split(": ").map(|s| s.to_string()).collect();
         let panic_msg = "Could not parse doc header. Ensure your header follows the `title: description' format".to_string();
-        let title = parts.get(0).expect(&panic_msg).to_owned();
+        let title = parts.first().expect(&panic_msg).to_owned();
         let real_description = parts.get(1).expect(&panic_msg).to_owned();
 
         md.push_str("## ");
         md.push_str(&title);
-        md.push_str("\n");
+        md.push('\n');
         md.push_str(&real_description);
-        md.push_str("\n");
+        md.push('\n');
 
 
-        if self.params.len() > 0 {
+        if !self.params.is_empty() {
             md.push_str("### Parameters: ");
-            md.push_str("\n");
+            md.push('\n');
 
             self.params.iter().for_each(|p| {
 
-                md.push_str(&p.into_markdown());
+                md.push_str(&p.markdown());
             });
         }
 
         if let Some(ret) = self.return_type.clone() {
             md.push_str("### Returns: ");
-            md.push_str("\n");
-            md.push_str(&ret.into_markdown());
+            md.push('\n');
+            md.push_str(&ret.markdown());
         }
+        md.push('\n');
 
-        md.push_str("\n");
-        return md;
+        md
     }
 }
 
@@ -61,7 +61,7 @@ struct Return {
 }
 
 impl Markdownable for Return{
-    fn into_markdown(&self) -> String {
+    fn markdown(&self) -> String {
        format!("`{}`: {} \n", self.data_type, self.description)
     }
 }
@@ -76,7 +76,7 @@ struct Param {
 }
 
 impl Markdownable for Param{
-    fn into_markdown(&self) -> String {
+    fn markdown(&self) -> String {
         let data_type_str = self.data_type.join(" | ");
 
         let mut default_str = String::new();
@@ -184,16 +184,16 @@ fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>().split_off(1);
 
     args.iter().for_each(|f| {
-        let mut file = File::open(f).expect(&format!("Could not find file {f}"));
+        let mut file = File::open(f).unwrap_or_else(|_| panic!("Could not read file {f}"));
 
         let mut contents = String::new();
 
-        file.read_to_string(&mut contents).expect(&format!("Could not read file {f}"));
+        file.read_to_string(&mut contents).unwrap_or_else(|_| panic!("Could not read file {f}"));
 
         let docs = parse_document(&contents);
 
         docs.iter().for_each(|f| {
-            println!("{}", f.into_markdown());
+            println!("{}", f.markdown());
         });
 
     });
