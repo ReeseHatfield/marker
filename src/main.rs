@@ -84,7 +84,7 @@ impl Markdownable for Param{
             default_str = format!("(default: {})", def);
         };
 
-        format!("{}: `{}` {} {} \n",self.name, data_type_str, default_str, self.description)
+        format!("{}: `{}` {} {} \n \n",self.name, data_type_str, default_str, self.description)
     }
 }
 
