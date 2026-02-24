@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "marker"
+name = "marker-typ"
 version = "0.1.2"
 dependencies = [
  "regex",
