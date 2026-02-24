@@ -1,7 +1,8 @@
 use std::{
     env::{self},
     fs::File,
-    io::Read, process::exit,
+    io::Read,
+    process::exit,
 };
 
 use regex::Regex;
@@ -207,25 +208,24 @@ fn main() {
 
     let help_opts = ["-h", "--h", "--help", "help"];
     args.iter().for_each(|arg| {
-        if help_opts.contains(&arg.as_str()){
+        if help_opts.contains(&arg.as_str()) {
             print_help();
             exit(0);
         }
     });
 
     args.iter().for_each(|f| {
-        let mut file = File::open(f).unwrap_or_else(|_|{
+        let mut file = File::open(f).unwrap_or_else(|_| {
             print_help();
             panic!("Could not read file {f}")
         });
 
         let mut contents = String::new();
 
-        file.read_to_string(&mut contents)
-            .unwrap_or_else(|_| {
-                print_help();
-                panic!("Could not read file {f}")
-            });
+        file.read_to_string(&mut contents).unwrap_or_else(|_| {
+            print_help();
+            panic!("Could not read file {f}")
+        });
 
         let docs = parse_document(&contents);
 
