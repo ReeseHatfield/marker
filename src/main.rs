@@ -1,4 +1,4 @@
-use std::{env::{self, args}, fs::File, io::Read};
+use std::{env::{self}, fs::File, io::Read};
 
 use regex::Regex;
 
@@ -114,7 +114,7 @@ fn parse_document(input: &str) -> Vec<DocComment> {
 }
 
 fn parse_block(block: &str) -> DocComment {
-    let mut lines = block.lines();
+    let lines = block.lines();
 
     // asserting that description is everything before the first @ tag
     let description = lines
@@ -182,9 +182,6 @@ fn parse_block(block: &str) -> DocComment {
 
 fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>().split_off(1);
-
-    println!("Args: {:?}", args);
-
 
     args.iter().for_each(|f| {
         let mut file = File::open(f).expect(&format!("Could not find file {f}"));
