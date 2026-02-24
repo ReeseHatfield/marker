@@ -7,7 +7,7 @@ homepage = "https://github.com/ReeseHatfield/marker"
 repository = "https://github.com/ReeseHatfield/marker"
 readme = "README.md"
 version = "0.1.2"
-edition = "2024
+edition = "2024"
 
 [dependencies]
 regex = "1.12.3"
