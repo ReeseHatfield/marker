@@ -206,6 +206,11 @@ fn print_help() {
 fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>().split_off(1);
 
+    if args.is_empty() {
+        print_help();
+        exit(1);
+    }
+
     let help_opts = ["-h", "--h", "--help", "help"];
     args.iter().for_each(|arg| {
         if help_opts.contains(&arg.as_str()) {
