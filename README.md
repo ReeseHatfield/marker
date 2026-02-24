@@ -12,6 +12,13 @@ Marker generates markdown documentation from typst function doc comments.
 It adopts a similar (albeit hacky) syntax to Javadoc.
 It exports your doc comments to markdown for more maintainable typst documentation.
 
+
+## Installation
+If you have the rust/cargo toolchain, you can install with:
+```bash
+cargo install marker-typ
+```
+
 ## Syntax
 
 ### Header

@@ -9,5 +9,9 @@ readme = "README.md"
 version = "0.1.2"
 edition = "2024"
 
+[[bin]]
+name = "marker"
+path = "src/main.rs"
+
 [dependencies]
 regex = "1.12.3"
