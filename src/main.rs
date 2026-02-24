@@ -1,7 +1,7 @@
 use std::{
     env::{self},
     fs::File,
-    io::Read,
+    io::Read, process::exit,
 };
 
 use regex::Regex;
@@ -197,16 +197,35 @@ fn parse_block(block: &str) -> DocComment {
     }
 }
 
+fn print_help() {
+    println!("Usage: ");
+    println!("marker [FILES...]");
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>().split_off(1);
 
+    let help_opts = ["-h", "--h", "--help", "help"];
+    args.iter().for_each(|arg| {
+        if help_opts.contains(&arg.as_str()){
+            print_help();
+            exit(0);
+        }
+    });
+
     args.iter().for_each(|f| {
-        let mut file = File::open(f).unwrap_or_else(|_| panic!("Could not read file {f}"));
+        let mut file = File::open(f).unwrap_or_else(|_|{
+            print_help();
+            panic!("Could not read file {f}")
+        });
 
         let mut contents = String::new();
 
         file.read_to_string(&mut contents)
-            .unwrap_or_else(|_| panic!("Could not read file {f}"));
+            .unwrap_or_else(|_| {
+                print_help();
+                panic!("Could not read file {f}")
+            });
 
         let docs = parse_document(&contents);
 
