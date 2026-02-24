@@ -1,6 +1,6 @@
-use std::{env::{self, args}, fs::File, io::Read, ops::Add};
+use std::{env::{self, args}, fs::File, io::Read};
 
-use regex::{Regex, bytes::SetMatchesIter};
+use regex::Regex;
 
 
 trait Markdownable {
@@ -181,18 +181,6 @@ fn parse_block(block: &str) -> DocComment {
 
 
 fn main() {
-    let input = r#"
-// exam stuff
-
-"#;
-
-
-    // sends a request
-    // @param url string
-    // @param retries [int | float] = 3 number of retries
-    // @param timeout ms = 5000 request timeout
-    // @return Response description
-
     let args: Vec<String> = env::args().collect::<Vec<String>>().split_off(1);
 
     println!("Args: {:?}", args);
