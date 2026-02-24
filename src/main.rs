@@ -1,13 +1,15 @@
-use std::{env::{self}, fs::File, io::Read};
+use std::{
+    env::{self},
+    fs::File,
+    io::Read,
+};
 
 use regex::Regex;
-
 
 /// Trait representing the ability to be converted into markdown
 trait Markdownable {
     fn markdown(&self) -> String;
 }
-
 
 /// Structure for all `marker` doc comments in the form
 /// name: Description
@@ -29,7 +31,11 @@ impl Markdownable for DocComment {
 
         // get the title via split on ": " from descriptions
 
-        let parts: Vec<String> = self.description.split(": ").map(|s| s.to_string()).collect();
+        let parts: Vec<String> = self
+            .description
+            .split(": ")
+            .map(|s| s.to_string())
+            .collect();
         let panic_msg = "Could not parse doc header. Ensure your header follows the `title: description' format".to_string();
         let title = parts.first().expect(&panic_msg).to_owned();
         let real_description = parts.get(1).expect(&panic_msg).to_owned();
@@ -40,13 +46,11 @@ impl Markdownable for DocComment {
         md.push_str(&real_description);
         md.push('\n');
 
-
         if !self.params.is_empty() {
             md.push_str("### Parameters: ");
             md.push('\n');
 
             self.params.iter().for_each(|p| {
-
                 md.push_str(&p.markdown());
             });
         }
@@ -69,15 +73,13 @@ struct Return {
     description: String,
 }
 
-impl Markdownable for Return{
-
+impl Markdownable for Return {
     /// Convert a Return struct into its markdown representation
     /// Into the form: "`type` description"
     fn markdown(&self) -> String {
-       format!("`{}`: {} \n", self.data_type, self.description)
+        format!("`{}`: {} \n", self.data_type, self.description)
     }
 }
-
 
 /// Structure for an @param piece of a doc comment
 #[derive(Debug)]
@@ -88,8 +90,7 @@ struct Param {
     description: String,
 }
 
-impl Markdownable for Param{
-
+impl Markdownable for Param {
     /// Convert a parameter into its markdown representation
     /// Into the form: "name: `type` description"
     fn markdown(&self) -> String {
@@ -100,7 +101,10 @@ impl Markdownable for Param{
             default_str = format!("(default: {})", def);
         };
 
-        format!("{}: `{}` {} {} \n \n",self.name, data_type_str, default_str, self.description)
+        format!(
+            "{}: `{}` {} {} \n \n",
+            self.name, data_type_str, default_str, self.description
+        )
     }
 }
 
@@ -160,10 +164,7 @@ fn parse_block(block: &str) -> DocComment {
     let return_re = Regex::new(r"@return\s+(?P<type>\S+)\s+(?P<desc>.*)").unwrap();
 
     for line in lines {
-
-
         if let Some(caps) = param_re.captures(line) {
-
             // strip the [ ]s from the types
             // but leave the |s
             let type_raw = caps["type"].trim_matches(|c| c == '[' || c == ']');
@@ -171,7 +172,7 @@ fn parse_block(block: &str) -> DocComment {
             // split on |s map to string and collect
             let data_types = type_raw.split('|').map(|s| s.trim().to_string()).collect();
 
-            let p =  Param {
+            let p = Param {
                 name: caps["name"].to_string(),
                 data_type: data_types,
                 default: caps.name("default").map(|m| m.as_str().to_string()),
@@ -179,7 +180,6 @@ fn parse_block(block: &str) -> DocComment {
             };
 
             params.push(p);
-
         } else if let Some(caps) = return_re.captures(line) {
             return_type = Some(Return {
                 data_type: caps["type"].to_string(),
@@ -197,7 +197,6 @@ fn parse_block(block: &str) -> DocComment {
     }
 }
 
-
 fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>().split_off(1);
 
@@ -206,14 +205,13 @@ fn main() {
 
         let mut contents = String::new();
 
-        file.read_to_string(&mut contents).unwrap_or_else(|_| panic!("Could not read file {f}"));
+        file.read_to_string(&mut contents)
+            .unwrap_or_else(|_| panic!("Could not read file {f}"));
 
         let docs = parse_document(&contents);
 
         docs.iter().for_each(|f| {
             println!("{}", f.markdown());
         });
-
     });
-
 }
