@@ -3,11 +3,18 @@ use std::{env::{self}, fs::File, io::Read};
 use regex::Regex;
 
 
+/// Trait representing the ability to be converted into markdown
 trait Markdownable {
     fn markdown(&self) -> String;
 }
 
 
+/// Structure for all `marker` doc comments in the form
+/// name: Description
+/// ...
+/// @param name type description ...
+/// @param name type description ...
+/// @return type description
 #[derive(Debug)]
 struct DocComment {
     description: String,
@@ -16,6 +23,7 @@ struct DocComment {
 }
 
 impl Markdownable for DocComment {
+    /// Convert a DocComment into its markdown representation
     fn markdown(&self) -> String {
         let mut md = String::new();
 
@@ -54,6 +62,7 @@ impl Markdownable for DocComment {
     }
 }
 
+/// Structure for an @return piece of a doc comment
 #[derive(Debug, Clone)]
 struct Return {
     data_type: String,
@@ -61,12 +70,16 @@ struct Return {
 }
 
 impl Markdownable for Return{
+
+    /// Convert a Return struct into its markdown representation
+    /// Into the form: "`type` description"
     fn markdown(&self) -> String {
        format!("`{}`: {} \n", self.data_type, self.description)
     }
 }
 
 
+/// Structure for an @param piece of a doc comment
 #[derive(Debug)]
 struct Param {
     name: String,
@@ -76,6 +89,9 @@ struct Param {
 }
 
 impl Markdownable for Param{
+
+    /// Convert a parameter into its markdown representation
+    /// Into the form: "name: `type` description"
     fn markdown(&self) -> String {
         let data_type_str = self.data_type.join(" | ");
 
@@ -88,6 +104,7 @@ impl Markdownable for Param{
     }
 }
 
+/// Parses an entire typst file (document) into a `Vec<DocComment>`
 fn parse_document(input: &str) -> Vec<DocComment> {
     let mut comment_chunks = Vec::new();
     let mut cur = String::new();
@@ -113,6 +130,7 @@ fn parse_document(input: &str) -> Vec<DocComment> {
         .collect()
 }
 
+/// Parses a single doc comment block into a DocComment
 fn parse_block(block: &str) -> DocComment {
     let lines = block.lines();
 
