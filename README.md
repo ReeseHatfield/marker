@@ -99,5 +99,7 @@ or the rendered version:
 Create a free response question
 ### Parameters:
 q_body: `content`  Question Body
+
 lines: `int` (default: 1) lines of space to give the user, renders as empty space
+
 points: `int` (default: 1) points the question is worth
